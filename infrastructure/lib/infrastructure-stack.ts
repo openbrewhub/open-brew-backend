@@ -1,7 +1,7 @@
 import * as cdk from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as apigateway from '@aws-cdk/aws-apigateway';
-import { PolicyStatement, Role, ServicePrincipal } from '@aws-cdk/aws-iam';
+import { ServicePrincipal } from '@aws-cdk/aws-iam';
 import { EndpointType } from '@aws-cdk/aws-apigateway';
 
 export class InfrastructureStack extends cdk.Stack {
