@@ -1,9 +1,8 @@
-import * as path from 'path';
 import * as cdk from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as apigateway from '@aws-cdk/aws-apigateway';
-
-declare const getBookHandler: lambda.Function;
+import { PolicyStatement, Role, ServicePrincipal } from '@aws-cdk/aws-iam';
+import { EndpointType } from '@aws-cdk/aws-apigateway';
 
 export class InfrastructureStack extends cdk.Stack {
 
@@ -11,29 +10,45 @@ export class InfrastructureStack extends cdk.Stack {
     super(scope, id, props);
 
     // defines an AWS Lambda resource
-    const hello = new lambda.Function(this, 'HelloHandler', {
-      runtime: lambda.Runtime.NODEJS_14_X,    // execution environment
-      code: lambda.Code.fromAsset('lambda'),  // code loaded from "lambda" directory
-      handler: 'hello.handler'                // file is "hello", function is "handler"
+    const getRecipesHandler = new lambda.Function(this, 'openbrew_getRecipesHandler', {
+      functionName: 'OpenBrew-GetRecipients',
+      runtime: lambda.Runtime.NODEJS_14_X,
+      code: lambda.Code.fromAsset('lambda'),
+      handler: 'getrecipes.handler'
     });
 
-    /*
-    const api = new apigateway.SpecRestApi(this, 'recipes-api', {
-      apiDefinition: apigateway.ApiDefinition.fromAsset('./assets/openapi-definition.yml')
+    // Grant lambda access for api gateway(s)
+    getRecipesHandler.grantInvoke(new ServicePrincipal('apigateway.amazonaws.com')); //maybe more granular in future...
+
+    // Merge api-definition with aws specifics
+    var mergeYaml = require('merge-yaml');
+    var merged = mergeYaml([
+      './assets/aws-parts.yaml',
+      './assets/openbrew-api.yaml'
+    ]);
+    var mergedString = JSON.stringify(merged);
+
+    // Inject lambda arns 
+    var re = /FreakyLambdaArn/g;
+    var newstr = mergedString.replace(re, getRecipesHandler.functionArn);
+    var newApiDefinition = JSON.parse(newstr);
+
+    // Define API from merged open api spec
+    const api = new apigateway.SpecRestApi(this, 'Open Brew Recipes API', {
+      apiDefinition: apigateway.ApiDefinition.fromInline(newApiDefinition),
+      endpointTypes: [EndpointType.REGIONAL],
+      deployOptions: {
+        description: 'This is the common standard api description for the exchange of beer brewing recipes. Cheers.',
+        stageName: 'prod',
+        loggingLevel: apigateway.MethodLoggingLevel.ERROR,
+        metricsEnabled: true,
+        dataTraceEnabled: true,
+      }
     });
 
-    Ist nicht so geil wie angenommen... müssen das erstmal anlegen und dann exportieren, weil da im swagger aws-spezifische Params stehen müssen.
-
-    z. B.:
-            x-amazon-apigateway-integration:
-            uri:> -
-            arn: aws: apigateway: [secure]: lambda: path/2015-03-31/functions/arn: aws: lambda: [secure]: [secure]: function: ApiLambdaCrudDynamoDBExam-getAllItemsFunction0B7A9-1MLKSKO1RUL3I/invocations
-            passthroughBehavior: when_no_match
-            httpMethod: POST
-            type: aws_proxy
-
-    Also händisch anlegen, exportieren, über nen merge die lambda arns updatend und dann neu ausrollen.... -> https://martinmueller.dev/cdk-swagger-eng/
-    */
-   
+    // Todo: 
+    // Route53 subdomain (api.openbrewhub.com) -> alias to apigateway
+    // Certificate for subdomain
+    // Custom Domain Name with api mapping
   }
 }
