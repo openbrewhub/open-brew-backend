@@ -12,9 +12,9 @@ export class InfrastructureStack extends cdk.Stack {
     // defines an AWS Lambda resource
     const getRecipesHandler = new lambda.Function(this, 'openbrew_getRecipesHandler', {
       functionName: 'OpenBrew-GetRecipients',
-      runtime: lambda.Runtime.NODEJS_14_X,
+      runtime: lambda.Runtime.PYTHON_3_6,
       code: lambda.Code.fromAsset('lambda'),
-      handler: 'getrecipes.handler'
+      handler: 'getrecipes.lambda_handler'
     });
 
     // Grant lambda access for api gateway(s)
@@ -50,5 +50,58 @@ export class InfrastructureStack extends cdk.Stack {
     // Route53 subdomain (api.openbrewhub.com) -> alias to apigateway
     // Certificate for subdomain
     // Custom Domain Name with api mapping
+    
+    //Example
+    /*
+    import * as cdk from "@aws-cdk/core";
+    import * as apigw from "@aws-cdk/aws-apigateway";
+    import * as acm from "@aws-cdk/aws-certificatemanager";
+    import * as route53 from "@aws-cdk/aws-route53";
+    import * as route53Targets from "@aws-cdk/aws-route53-targets";
+    import * as lambda from "@aws-cdk/aws-lambda";
+
+    export class HelloCdkStack extends cdk.Stack {
+
+    constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+        super(scope, id, props);
+        this.buildLambdaApiGateway();
+      }
+
+        buildLambdaApiGateway() {
+        const rootDomain = "example.org";
+
+        const zone = route53.HostedZone.fromLookup(this, "baseZone", {
+          domainName: rootDomain,
+        });
+
+        const backend = new lambda.Function(this, "MyLayeredLambda", {
+          code: new lambda.InlineCode("foo"),
+          handler: "index.handler",
+          runtime: lambda.Runtime.NODEJS_10_X,
+        });
+
+        const restApi = new apigw.LambdaRestApi(this, "myapi", {
+          handler: backend,
+          domainName: {
+            domainName: `api-test.${rootDomain}`,
+            certificate: acm.Certificate.fromCertificateArn(
+              this,
+              "my-cert",
+              "arn:aws:acm:us-east-1:111112222333:certificate/abcd6805-1234-4159-ac38-761acdc700ef"
+            ),
+            endpointType: apigw.EndpointType.REGIONAL,
+          },
+        });
+
+        new route53.ARecord(this, "apiDNS", {
+          zone: zone,
+          recordName: "api-test",
+          target: route53.RecordTarget.fromAlias(
+            new route53Targets.ApiGateway(restApi)
+          ),
+        });
+      }
+    }
+    */
   }
 }
