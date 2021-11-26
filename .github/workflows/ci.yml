@@ -22,5 +22,8 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
+    - name: Switch folder
+      run: cd infrastructure/
+
     - name: Deploy backend
-      run: make deploy-ci
+      run: yarn cdk deploy
