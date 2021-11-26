@@ -6,6 +6,7 @@ import { EndpointType } from '@aws-cdk/aws-apigateway';
 import * as route53 from "@aws-cdk/aws-route53";
 import * as route53Targets from "@aws-cdk/aws-route53-targets";
 import * as acm from "@aws-cdk/aws-certificatemanager";
+// import * as merge from "merge-yaml";
 
 export class InfrastructureStack extends cdk.Stack {
 
@@ -21,7 +22,7 @@ export class InfrastructureStack extends cdk.Stack {
     // Create certificate
     const apiCertificate = new acm.Certificate(this, 'ApiCertificate', {
       domainName: `api.${rootDomain}`,
-      validation: acm.CertificateValidation.fromDns(zone)
+      validation: acm.CertificateValidation.fromDns(zone),
     });
 
     // Lambda function for api gateway integration
@@ -29,7 +30,7 @@ export class InfrastructureStack extends cdk.Stack {
       functionName: 'OpenBrew-GetRecipients',
       runtime: lambda.Runtime.PYTHON_3_6,
       code: lambda.Code.fromAsset('lambda'),
-      handler: 'getrecipes.lambda_handler'
+      handler: 'getrecipes.lambda_handler',
     });
 
     // Grant lambda access for api gateway(s)
@@ -39,7 +40,7 @@ export class InfrastructureStack extends cdk.Stack {
     var mergeYaml = require('merge-yaml');
     var merged = mergeYaml([
       './assets/aws-parts.yaml',
-      './assets/openbrew-api.yaml'
+      './assets/openbrew-api.yaml',
     ]);
     var mergedString = JSON.stringify(merged);
 
@@ -58,10 +59,12 @@ export class InfrastructureStack extends cdk.Stack {
         loggingLevel: apigateway.MethodLoggingLevel.ERROR,
         metricsEnabled: true,
         dataTraceEnabled: true,
+        throttlingBurstLimit: 10,
+        throttlingRateLimit: 1,
       },
       domainName: {
         domainName: `api.${rootDomain}`,
-        certificate: apiCertificate
+        certificate: apiCertificate,
       }
     });
 
@@ -70,7 +73,7 @@ export class InfrastructureStack extends cdk.Stack {
       zone: zone,
       recordName: "api",
       target: route53.RecordTarget.fromAlias(
-        new route53Targets.ApiGateway(api)
+        new route53Targets.ApiGateway(api),
       ),
     });
 
