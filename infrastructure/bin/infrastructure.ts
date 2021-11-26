@@ -18,4 +18,6 @@ new InfrastructureStack(app, 'Backend-InfrastructureStack', {
   // env: { account: '123456789012', region: 'us-east-1' },
 
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
+
+  env: { account: '387314862676', region: 'eu-central-1' }
 });
