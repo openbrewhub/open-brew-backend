@@ -18,6 +18,12 @@ export class InfrastructureStack extends cdk.Stack {
       domainName: rootDomain,
     });
 
+    // Create certificate
+    const apiCertificate = new acm.Certificate(this, 'ApiCertificate', {
+      domainName: `api.${rootDomain}`,
+      validation: acm.CertificateValidation.fromDns(zone)
+    });
+
     // Lambda function for api gateway integration
     const getRecipesHandler = new lambda.Function(this, 'openbrew_getRecipesHandler', {
       functionName: 'OpenBrew-GetRecipients',
@@ -55,11 +61,7 @@ export class InfrastructureStack extends cdk.Stack {
       },
       domainName: {
         domainName: `api.${rootDomain}`,
-        certificate: acm.Certificate.fromCertificateArn(
-          this,
-          "17da91b2-b5c4-4c95-9dfd-400e4b8f45b4",
-          "arn:aws:acm:eu-central-1:387314862676:certificate/17da91b2-b5c4-4c95-9dfd-400e4b8f45b4"
-        ) // TODO: We should create this certificate also in this stack...
+        certificate: apiCertificate
       }
     });
 
