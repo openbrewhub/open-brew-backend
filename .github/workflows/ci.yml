@@ -20,6 +20,7 @@ jobs:
       with:
         working_dir: 'infrastructure'
         cdk_subcommand: 'deploy'
+        cdk_stack: 'Backend-InfrastructureStack'
         cdk_args: '--require-approval never'
         actions_comment: false
       env:
