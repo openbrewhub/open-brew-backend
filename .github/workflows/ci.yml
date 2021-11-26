@@ -23,5 +23,5 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Deploy backend
-    - run: cd infrastructure/
-    - run: yarn cdk deploy
+      run: yarn cdk deploy
+      working-directory: infrastructure/
