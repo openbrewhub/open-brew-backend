@@ -3,7 +3,7 @@ paths:
     get:
       x-amazon-apigateway-integration:
         type: "aws"
-        httpMethod: "POST"
+        httpMethod: "GET"
         uri: "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/FreakyLambdaArn/invocations"
         responses:
           default:
@@ -13,7 +13,17 @@ paths:
     put:
       x-amazon-apigateway-integration:
         type: "aws"
-        httpMethod: "POST"
+        httpMethod: "PUT"
+        uri: "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/FreakyLambdaArn/invocations"
+        responses:
+          default:
+            statusCode: "200"
+        passthroughBehavior: "when_no_match"
+        contentHandling: "CONVERT_TO_TEXT"
+    delete:
+      x-amazon-apigateway-integration:
+        type: "aws"
+        httpMethod: "DELETE"
         uri: "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/FreakyLambdaArn/invocations"
         responses:
           default:
@@ -24,7 +34,7 @@ paths:
     get:
       x-amazon-apigateway-integration:
         type: "aws"
-        httpMethod: "POST"
+        httpMethod: "GET"
         uri: "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/FreakyLambdaArn/invocations"
         responses:
           default:
