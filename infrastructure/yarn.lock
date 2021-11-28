@@ -151,6 +151,21 @@
     constructs "^3.3.69"
     punycode "^2.1.1"
 
+"@aws-cdk/aws-dynamodb@^1.134.0":
+  version "1.134.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/aws-dynamodb/-/aws-dynamodb-1.134.0.tgz#c72f9d90af35446c1cd8062f342fb29b280c6f22"
+  integrity sha512-WPxrtUVMvlt73dfrlvQnC+DdR8xrsqfT/fZ4xvP604jRtM2UlGIuXrURSWL34ozwBIazs3IrlWyLWXaYC5kdGg==
+  dependencies:
+    "@aws-cdk/aws-applicationautoscaling" "1.134.0"
+    "@aws-cdk/aws-cloudwatch" "1.134.0"
+    "@aws-cdk/aws-iam" "1.134.0"
+    "@aws-cdk/aws-kinesis" "1.134.0"
+    "@aws-cdk/aws-kms" "1.134.0"
+    "@aws-cdk/aws-lambda" "1.134.0"
+    "@aws-cdk/core" "1.134.0"
+    "@aws-cdk/custom-resources" "1.134.0"
+    constructs "^3.3.69"
+
 "@aws-cdk/aws-ec2@1.134.0":
   version "1.134.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-ec2/-/aws-ec2-1.134.0.tgz#25d38243aa04fd2498c0a7682ce7cd375760d41d"
@@ -258,6 +273,18 @@
   dependencies:
     "@aws-cdk/core" "1.134.0"
     "@aws-cdk/region-info" "1.134.0"
+    constructs "^3.3.69"
+
+"@aws-cdk/aws-kinesis@1.134.0":
+  version "1.134.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/aws-kinesis/-/aws-kinesis-1.134.0.tgz#aef407fcc8d5956cbcc62442e687d28eff6aed06"
+  integrity sha512-JWHP+LJfqt9/pqVjXnoQkWGZEoAJuPLTb0RHibEyFMd+dq/bFjWbfxTHPbxmFdm2NLqG6dI05EzHwx9IfcaYuw==
+  dependencies:
+    "@aws-cdk/aws-cloudwatch" "1.134.0"
+    "@aws-cdk/aws-iam" "1.134.0"
+    "@aws-cdk/aws-kms" "1.134.0"
+    "@aws-cdk/aws-logs" "1.134.0"
+    "@aws-cdk/core" "1.134.0"
     constructs "^3.3.69"
 
 "@aws-cdk/aws-kms@1.134.0":

@@ -1,53 +1,76 @@
+x-amazon-apigateway-api-key-source: "HEADER"
 paths:
   /recipes/{recipeId}:
     get:
+      security:
+      - sigv4Reference: []
       x-amazon-apigateway-integration:
-        type: "aws"
-        httpMethod: "GET"
-        uri: "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/FreakyLambdaArn/invocations"
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/FreakyLambdaArnGetRecipe/invocations"
         responses:
           default:
             statusCode: "200"
         passthroughBehavior: "when_no_match"
         contentHandling: "CONVERT_TO_TEXT"
+        credentials: "arn:aws:iam::FreakyAccountId:role/openBrewApiRole"
     put:
+      security:
+      - sigv4Reference: []
       x-amazon-apigateway-integration:
-        type: "aws"
-        httpMethod: "PUT"
-        uri: "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/FreakyLambdaArn/invocations"
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/FreakyLambdaArnPutRecipe/invocations"
         responses:
           default:
             statusCode: "200"
         passthroughBehavior: "when_no_match"
         contentHandling: "CONVERT_TO_TEXT"
+        credentials: "arn:aws:iam::FreakyAccountId:role/openBrewApiRole"
     delete:
+      security:
+      - sigv4Reference: []
       x-amazon-apigateway-integration:
-        type: "aws"
-        httpMethod: "DELETE"
-        uri: "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/FreakyLambdaArn/invocations"
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/FreakyLambdaArnDeleteRecipe/invocations"
         responses:
           default:
             statusCode: "200"
         passthroughBehavior: "when_no_match"
         contentHandling: "CONVERT_TO_TEXT"
+        credentials: "arn:aws:iam::FreakyAccountId:role/openBrewApiRole"
   /recipes:
     get:
+      security:
+      - sigv4Reference: []
       x-amazon-apigateway-integration:
-        type: "aws"
-        httpMethod: "GET"
-        uri: "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/FreakyLambdaArn/invocations"
-        responses:
-          default:
-            statusCode: "200"
-        passthroughBehavior: "when_no_match"
-        contentHandling: "CONVERT_TO_TEXT"
-    post:
-      x-amazon-apigateway-integration:
-        type: "aws"
+        type: "aws_proxy"
         httpMethod: "POST"
-        uri: "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/FreakyLambdaArn/invocations"
+        uri: "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/FreakyLambdaArnGetRecipes/invocations"
         responses:
           default:
             statusCode: "200"
         passthroughBehavior: "when_no_match"
         contentHandling: "CONVERT_TO_TEXT"
+        credentials: "arn:aws:iam::FreakyAccountId:role/openBrewApiRole"
+    post:
+      security:
+      - sigv4Reference: []
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/FreakyLambdaArnPostRecipe/invocations"
+        responses:
+          default:
+            statusCode: "200"
+        passthroughBehavior: "when_no_match"
+        contentHandling: "CONVERT_TO_TEXT"
+        credentials: "arn:aws:iam::FreakyAccountId:role/openBrewApiRole"
+components:
+  securitySchemes:
+    sigv4Reference" :
+            type: "apiKey"
+            name: "Authorization"
+            in: "header"
+            x-amazon-apigateway-authtype: "awsSigv4"

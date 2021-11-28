@@ -7,12 +7,14 @@ info:
     name: Beerware
     url: https://de.wikipedia.org/wiki/Beerware
 servers:
-  - url: http://api.openbrewhub.com/api/
+  - url: http://api.openbrewhub.com/
 paths:
   /recipes:
     get:
       summary: List all receipes
       operationId: listRecipes
+      security:
+        - ApiKeyAuth: []
       tags:
         - recipes
       parameters:
@@ -57,6 +59,8 @@ paths:
     post:
       summary: Create a new recipe
       operationId: createRecipe
+      security:
+        - ApiKeyAuth: []
       tags:
         - recipes
       requestBody:
@@ -75,11 +79,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-
   /recipes/{recipeId}:
     get:
       summary: Get a specific recipe
       operationId: getRecipe
+      security:
+        - ApiKeyAuth: []
       tags:
         - recipes
       parameters:
@@ -105,6 +110,8 @@ paths:
     put:
       summary: Replace/update an existing recipe
       operationId: updateRecipe
+      security:
+        - ApiKeyAuth: []
       tags:
         - recipes
       parameters:
@@ -133,6 +140,8 @@ paths:
     delete:
       summary: Delete an existing recipe
       operationId: deleteRecipe
+      security:
+        - ApiKeyAuth: []
       tags:
         - recipes
       parameters:
@@ -152,6 +161,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
   schemas:
     Recipe:
       type: object
