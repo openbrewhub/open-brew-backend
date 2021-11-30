@@ -31,13 +31,13 @@ export class InfrastructureStack extends cdk.Stack {
       accountRecovery: AccountRecovery.EMAIL_ONLY,
       selfSignUpEnabled: false,
       userVerification: {
-          emailSubject: 'Verify your email for our awesome app!',
-          emailBody: 'Thanks for signing up to our awesome app! Your verification code is {####}',
-          emailStyle: VerificationEmailStyle.CODE,
-          smsMessage: 'Thanks for signing up to our awesome app! Your verification code is {####}',
+        emailSubject: 'Verify your email for our awesome app!',
+        emailBody: 'Thanks for signing up to our awesome app! Your verification code is {####}',
+        emailStyle: VerificationEmailStyle.CODE,
+        smsMessage: 'Thanks for signing up to our awesome app! Your verification code is {####}',
       }
-  });
-  const client = pool.addClient('ng-brew-ui');
+    });
+    const client = pool.addClient('ng-brew-ui');
 
     // Create dynamo db
     const dynamoTable = new dynamodb.Table(this, 'OpenBrew Recipes Table', {
@@ -47,35 +47,38 @@ export class InfrastructureStack extends cdk.Stack {
     // Lambda functions for api gateway integration
     const getRecipesHandler = new lambda.Function(this, 'OpenBrew GetRecipes', {
       functionName: 'OpenBrew-GetRecipes',
-      runtime: lambda.Runtime.PYTHON_3_6,
+      runtime: lambda.Runtime.PYTHON_3_9,
       code: lambda.Code.fromAsset('lambda'),
       handler: 'getrecipes.lambda_handler',
     });
 
     const getRecipeHandler = new lambda.Function(this, 'OpenBrew GetRecipe', {
       functionName: 'OpenBrew-GetRecipe',
-      runtime: lambda.Runtime.PYTHON_3_6,
+      runtime: lambda.Runtime.PYTHON_3_9,
       code: lambda.Code.fromAsset('lambda'),
       handler: 'getrecipes.lambda_handler',
     });
 
     const putRecipeHandler = new lambda.Function(this, 'OpenBrew PutRecipe', {
       functionName: 'OpenBrew-PutRecipe',
-      runtime: lambda.Runtime.PYTHON_3_6,
+      runtime: lambda.Runtime.PYTHON_3_9,
       code: lambda.Code.fromAsset('lambda'),
-      handler: 'getrecipes.lambda_handler',
+      handler: 'putrecipe.lambda_handler',
+      environment: {
+        "openbrew_dynamo_table": dynamoTable.tableName,
+      },
     });
 
     const postRecipeHandler = new lambda.Function(this, 'OpenBrew PostRecipe', {
       functionName: 'OpenBrew-PostRecipe',
-      runtime: lambda.Runtime.PYTHON_3_6,
+      runtime: lambda.Runtime.PYTHON_3_9,
       code: lambda.Code.fromAsset('lambda'),
       handler: 'getrecipes.lambda_handler',
     });
 
     const deleteRecipeHandler = new lambda.Function(this, 'OpenBrew DeleteRecipe', {
       functionName: 'OpenBrew-DeleteRecipe',
-      runtime: lambda.Runtime.PYTHON_3_6,
+      runtime: lambda.Runtime.PYTHON_3_9,
       code: lambda.Code.fromAsset('lambda'),
       handler: 'getrecipes.lambda_handler',
     });
@@ -111,7 +114,7 @@ export class InfrastructureStack extends cdk.Stack {
       deployOptions: {
         description: 'This is the common standard api description for the exchange of beer brewing recipes. Cheers.',
         stageName: 'prod',
-        loggingLevel: apigateway.MethodLoggingLevel.INFO,
+        loggingLevel: apigateway.MethodLoggingLevel.ERROR,
         metricsEnabled: true,
         dataTraceEnabled: true,
         throttlingRateLimit: 1,
