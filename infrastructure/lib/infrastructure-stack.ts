@@ -1,8 +1,9 @@
 import * as cdk from '@aws-cdk/core';
+import { UserPool, VerificationEmailStyle, AccountRecovery } from "@aws-cdk/aws-cognito";
 import * as dynamodb from '@aws-cdk/aws-dynamodb'
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as apigateway from '@aws-cdk/aws-apigateway';
-import { ServicePrincipal, Role, PolicyStatement, ArnPrincipal } from '@aws-cdk/aws-iam';
+import { ServicePrincipal, Role, PolicyStatement } from '@aws-cdk/aws-iam';
 import { EndpointType } from '@aws-cdk/aws-apigateway';
 import * as route53 from "@aws-cdk/aws-route53";
 import * as route53Targets from "@aws-cdk/aws-route53-targets";
@@ -24,6 +25,19 @@ export class InfrastructureStack extends cdk.Stack {
       domainName: `api.${rootDomain}`,
       validation: acm.CertificateValidation.fromDns(zone),
     });
+
+    // Create cognito userpool
+    const pool = new UserPool(this, 'openbrew-userpool', {
+      accountRecovery: AccountRecovery.EMAIL_ONLY,
+      selfSignUpEnabled: false,
+      userVerification: {
+          emailSubject: 'Verify your email for our awesome app!',
+          emailBody: 'Thanks for signing up to our awesome app! Your verification code is {####}',
+          emailStyle: VerificationEmailStyle.CODE,
+          smsMessage: 'Thanks for signing up to our awesome app! Your verification code is {####}',
+      }
+  });
+  const client = pool.addClient('ng-brew-ui');
 
     // Create dynamo db
     const dynamoTable = new dynamodb.Table(this, 'OpenBrew Recipes Table', {
